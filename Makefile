@@ -8,3 +8,5 @@ peep_FILES = Tweak.x
 peep_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += Preferences
+include $(THEOS_MAKE_PATH)/aggregate.mk
