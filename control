@@ -1,0 +1,9 @@
+Package: me.conorthedev.peep
+Name: peep
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: ConorTheDev <hello@cbyrne.dev>
+Author: ConorTheDev <hello@cbyrne.dev>
+Section: Tweaks
