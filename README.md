@@ -1,5 +1,5 @@
 # [peep](https://repo.dynastic.co/package/me.conorthedev.peep)
-![promo](https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true)
+<p align="center"><img src="https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true"></p>
 <br>
 Hide your status bar with one tap!
 
