@@ -21,7 +21,7 @@ If you have an issue with peep, [open an issue on the Issues Page](https://githu
 **Make sure you include screenshots / screen recordings, how to reproduce the issue and information about your device (i.e. Version, Model, etc.)**
 
 ## Credits
-- [Mirac](https://twitter.com/thatmirac) - The idea and designing
+- [Mirac](https://twitter.com/thatmirac) - The idea and help with design
 - [ConorTheDev](https://twitter.com/ConorTheDev) - Development
 
 ## Support Us
