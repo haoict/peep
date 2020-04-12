@@ -6,9 +6,11 @@
 
 #import "peep.h"
 
+BOOL previousTweakEnabled;
 BOOL tweakEnabled;
-NSDictionary *prefs = NULL;
-_UIStatusBar *globalStatusBar = NULL;
+BOOL animationsEnabled;
+NSDictionary *prefs;
+_UIStatusBar *globalStatusBar;
 
 %hook _UIStatusBar
 %property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
@@ -28,7 +30,7 @@ _UIStatusBar *globalStatusBar = NULL;
 -(void)gestureRecognizerTapped:(id)sender {
 	if((!tweakEnabled && self.foregroundView.subviews[0].hidden) || tweakEnabled) {
 		[UIView transitionWithView:self.foregroundView
-							duration:0.25
+							duration:animationsEnabled ? 0.25 : 0
 							options:UIViewAnimationOptionTransitionCrossDissolve
 							animations:^{
 								for (UIView *subview in self.foregroundView.subviews) {
@@ -69,15 +71,17 @@ static void updatePreferences() {
 	// Refresh dictionary
     CFPreferencesAppSynchronize((CFStringRef)kIdentifier);
     reloadPrefs();
+	BOOL shouldRefresh = (([prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE) == false && tweakEnabled != ([prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE) == false);
 
     tweakEnabled = [prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE;
+	animationsEnabled = [prefs objectForKey:@"animations"] ? [[prefs valueForKey:@"animations"] boolValue] : TRUE;
 
-	NSLog(@"[peep] Enabled: %i", tweakEnabled);
-
-	// Update gesture recognizer
-	if(globalStatusBar) {
+	// Update statusbar
+	if(globalStatusBar && shouldRefresh) {
 		[globalStatusBar gestureRecognizerTapped:nil];
 	}
+
+	previousTweakEnabled = tweakEnabled;
 }
 
 %ctor {
