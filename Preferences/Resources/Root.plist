@@ -21,6 +21,46 @@
 			<string>enabled</string>
 			<key>label</key>
 			<string>Enabled</string>
+			<key>PostNotification</key>
+			<string>me.conorthedev.peep.prefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Other</string>
+		</dict>
+		<dict>
+			<key>cell</key> 					
+			<string>PSButtonCell</string>
+			<key>action</key> 					
+			<string>donate</string>
+			<key>label</key> 					
+			<string>💵 Support me</string>
+		</dict>
+		<dict>
+			<key>cell</key> 					
+			<string>PSButtonCell</string>
+			<key>action</key> 					
+			<string>code</string>
+			<key>label</key> 					
+			<string>💻 View source code</string>
+		</dict>
+		<dict>
+			<key>cell</key> 					
+			<string>PSButtonCell</string>
+			<key>action</key> 					
+			<string>bug</string>
+			<key>label</key> 					
+			<string>🐛 Report a Bug</string>
+		</dict>
+		<dict>
+			<key>cell</key> 					
+			<string>PSGroupCell</string>
+			<key>footerText</key> 				
+			<string>Made with ❤️ by ConorTheDev</string>
+			<key>footerAlignment</key> 			
+			<string>1</string>
 		</dict>
 	</array>
 	<key>title</key>
