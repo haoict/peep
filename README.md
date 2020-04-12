@@ -11,7 +11,7 @@
 
 ## FAQ
 ### What is peep?
-peep is a tweak that allows you to temporarily hide your status bar by tapping on it. It only works on the homescreen and lockscreen.
+peep is a tweak that allows you to temporarily hide your status bar by tapping on it. You can disable / enable it in certain apps by just tapping on it in certain apps!
 
 ### What versions are supported?
 iOS 13.0+ have been tested, other versions may work but are not officially supported, **use at your own risk!**
