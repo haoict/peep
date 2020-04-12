@@ -2,7 +2,7 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = peepPrefs
 
-peepPrefs_FILES = peepRootListController.m
+peepPrefs_FILES = peepRootListController.m $(wildcard SkittyPrefs/*.m)
 peepPrefs_INSTALL_PATH = /Library/PreferenceBundles
 peepPrefs_FRAMEWORKS = UIKit
 peepPrefs_PRIVATE_FRAMEWORKS = Preferences

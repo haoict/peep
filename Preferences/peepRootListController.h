@@ -1,5 +1,6 @@
-#import <Preferences/PSListController.h>
+#include <Preferences/PSListController.h>
+#import "SkittyPrefs/SPSettingsController.h"
 
-@interface peepRootListController : PSListController
+@interface peepRootListController : SPSettingsController
 
 @end

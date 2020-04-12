@@ -1,6 +1,9 @@
 #include "peepRootListController.h"
 
 @implementation peepRootListController
+- (NSBundle *)resourceBundle {
+	return [NSBundle bundleWithPath:@"/Library/PreferenceBundles/peepPrefs.bundle"];
+}
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
