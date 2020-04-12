@@ -1,8 +1,8 @@
-# [peep](https://repo.dynastic.co/package/me.conorthedev.peep)
-<p align="center"><img src="https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true">
+<a href="https://repo.dynastic.co/package/me.conorthedev.peep"><p align="center"><img src="https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true">
+</p></a>
 
-Hide your status bar with one tap!
-</p>
+# peep
+> Hide your status bar with one tap!
 
 ## Installation
 1. Ensure that [``repo.dynastic.co``](https://repo.dynastic.co) is in your sources
