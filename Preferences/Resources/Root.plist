@@ -50,7 +50,9 @@
 			<key>action</key> 					
 			<string>donate</string>
 			<key>label</key> 					
-			<string>💵 Support me</string>
+			<string>Support me</string>
+			<key>icon</key>
+			<string>/Library/PreferenceBundles/peepPrefs.bundle/icons/Donate/icon_29pt.png</string>
 		</dict>
 		<dict>
 			<key>cell</key> 					
@@ -58,7 +60,9 @@
 			<key>action</key> 					
 			<string>code</string>
 			<key>label</key> 					
-			<string>💻 View source code</string>
+			<string>View source code</string>
+			<key>icon</key>
+			<string>/Library/PreferenceBundles/peepPrefs.bundle/icons/Source/icon_29pt.png</string>
 		</dict>
 		<dict>
 			<key>cell</key> 					
@@ -66,7 +70,9 @@
 			<key>action</key> 					
 			<string>bug</string>
 			<key>label</key> 					
-			<string>🐛 Report a Bug</string>
+			<string>Report a Bug</string>
+			<key>icon</key>
+			<string>/Library/PreferenceBundles/peepPrefs.bundle/icons/Bug/icon_29pt.png</string>
 		</dict>
 		<dict>
 			<key>cell</key> 					
