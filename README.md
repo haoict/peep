@@ -4,11 +4,6 @@
 # peep
 > Hide your status bar with one tap!
 
-## Installation
-1. Ensure that [``repo.dynastic.co``](https://repo.dynastic.co) is in your sources
-2. Search for ``peep`` in your Package Manager
-3. Install & Enjoy!
-
 ## FAQ
 ### What is peep?
 peep is a tweak that allows you to temporarily hide your status bar by tapping on it. It only works on the homescreen and lockscreen.
