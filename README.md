@@ -26,4 +26,4 @@ If you have an issue with peep, [open an issue on the Issues Page](https://githu
 
 ## Support Us
 - [Donate to Conor](https://ko-fi.com/ConorTheDev)
-- [Donate to Mirac](https://???)
+- [Donate to Mirac](paypal.me/ozdm)
