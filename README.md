@@ -1,4 +1,4 @@
-<a href="https://repo.dynastic.co/package/me.conorthedev.peep"><p align="center"><img src="https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true">
+<a href="https://repo.conorthedev.me/package/depiction/web/me.conorthedev.peep.html"><p align="center"><img src="https://github.com/cbyrne/peep/blob/master/promo/showcase.gif?raw=true">
 </p></a>
 
 # peep
