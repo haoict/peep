@@ -10,6 +10,8 @@
 @end
 
 @interface _UIStatusBar (peep)
+@property (nonatomic, strong) UITapGestureRecognizer *peep_tapRecognizer;
+@property (nonatomic, strong) UIView *peep_fakeSubview;
 -(void)peep_gestureRecognizerTapped:(id)sender;
 -(void)peep_setupGestureRecognizer;
 @end

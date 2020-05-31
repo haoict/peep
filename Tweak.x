@@ -13,10 +13,19 @@ NSDictionary *prefs;
 %property (nonatomic, strong) UITapGestureRecognizer *peep_tapRecognizer;
 %property (nonatomic, strong) UIView *peep_fakeSubview;
 
+-(id)initWithStyle:(long long)arg1 {		
+ 	self = %orig;		
+
+  	if(self) {		
+ 		[self peep_setupGestureRecognizer];		
+ 	}
+
+  	return self;		
+}
+
 %new 
 -(void)peep_gestureRecognizerTapped:(id)sender {
 	if(tweakEnabled) {
-		self.foregroundView.subviews[0].hidden = !self.foregroundView.subviews[0].hidden;
 		[UIView transitionWithView:self
 			duration:animationsEnabled ? 0.25 : 0
 			options:UIViewAnimationOptionTransitionCrossDissolve
@@ -35,10 +44,7 @@ NSDictionary *prefs;
 	[self addGestureRecognizer:self.peep_tapRecognizer];
 
 	// Add a fake subview, this allows our gesture recognizer to still be used as the view still has a subview, but it's not visible
-	if(!self.peep_fakeSubview) {
-		self.peep_fakeSubview = [[UIView alloc] initWithFrame:self.bounds];
-	}
-	
+	self.peep_fakeSubview = [[UIView alloc] initWithFrame:self.bounds];
 	[self addSubview:self.peep_fakeSubview];
 }
 %end
