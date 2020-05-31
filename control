@@ -1,9 +1,9 @@
 Package: me.conorthedev.peep
 Name: peep
 Depends: mobilesubstrate, preferenceloader
-Version: 1.0
+Version: 1.0.1
 Architecture: iphoneos-arm
-Description: Hide and show your status bar with one tap!
-Maintainer: ConorTheDev <support@conorthedev.me>
-Author: ConorTheDev <support@conorthedev.me>
+Description: Hide and show your status bar with one tap! (No longer maintained)
+Maintainer: ConorTheDev <conorthedev@gmail.com>
+Author: ConorTheDev <conorthedev@gmail.com>
 Section: Tweaks

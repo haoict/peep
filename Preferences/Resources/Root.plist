@@ -5,7 +5,7 @@
 	<key>name</key>
 	<string>peep</string>
 	<key>subtitle</key>
-	<string>Version 1.0</string>
+	<string>Version 1.0.1</string>
 	<key>headerColor</key>
 	<string>#202020</string>
 	<key>darkHeaderColor</key>
@@ -55,16 +55,6 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Other</string>
-		</dict>
-		<dict>
-			<key>cell</key> 					
-			<string>PSButtonCell</string>
-			<key>action</key> 					
-			<string>donate</string>
-			<key>label</key> 					
-			<string>Support me</string>
-			<key>icon</key>
-			<string>/Library/PreferenceBundles/peepPrefs.bundle/icons/Donate/icon_29pt.png</string>
 		</dict>
 		<dict>
 			<key>cell</key> 					

@@ -3,14 +3,14 @@
  A tweak that allows you to hide and show your status bar by tapping on it
  Copyright (c) ConorTheDev 2020
 */
-
 #import "peep.h"
 
-BOOL previousTweakEnabled;
 BOOL tweakEnabled;
 BOOL animationsEnabled;
+BOOL firstRun;
 NSDictionary *prefs;
-_UIStatusBar *globalStatusBar;
+NSMutableDictionary *ignoredSubviews;
+static _UIStatusBar *globalStatusBar;
 
 %hook _UIStatusBar
 %property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
@@ -28,13 +28,25 @@ _UIStatusBar *globalStatusBar;
 
 %new 
 -(void)gestureRecognizerTapped:(id)sender {
-	if((!tweakEnabled && self.foregroundView.subviews[0].hidden) || tweakEnabled) {
-		[UIView transitionWithView:self.foregroundView
+	if(tweakEnabled) {
+		if(firstRun) {
+			firstRun = false;
+			for (UIView *subview in self.foregroundView.subviews) {
+				if(subview.hidden) {
+					ignoredSubviews[[NSValue valueWithNonretainedObject:subview]] = @(YES);
+				}
+			}
+		}
+
+		self.foregroundView.subviews[0].hidden = !self.foregroundView.subviews[0].hidden;
+		[UIView transitionWithView:self
 							duration:animationsEnabled ? 0.25 : 0
 							options:UIViewAnimationOptionTransitionCrossDissolve
 							animations:^{
 								for (UIView *subview in self.foregroundView.subviews) {
-									subview.hidden = !subview.hidden;
+									if(!ignoredSubviews[[NSValue valueWithNonretainedObject:subview]]) {
+										subview.hidden = self.foregroundView.subviews[0].hidden;
+									}
 								}
 							}
 							completion:^(BOOL finished){ [self setupGestureRecognizer]; }];
@@ -68,23 +80,17 @@ static void reloadPrefs() {
 }
 
 static void updatePreferences() {
-	// Refresh dictionary
     CFPreferencesAppSynchronize((CFStringRef)kIdentifier);
     reloadPrefs();
-	BOOL shouldRefresh = (([prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE) == false && tweakEnabled != ([prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE) == false);
 
     tweakEnabled = [prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE;
 	animationsEnabled = [prefs objectForKey:@"animations"] ? [[prefs valueForKey:@"animations"] boolValue] : TRUE;
-
-	// Update statusbar
-	if(globalStatusBar && shouldRefresh) {
-		[globalStatusBar gestureRecognizerTapped:nil];
-	}
-
-	previousTweakEnabled = tweakEnabled;
 }
 
 %ctor {
+	ignoredSubviews = [NSMutableDictionary new];
+	firstRun = YES;
+
 	updatePreferences();
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)updatePreferences, CFSTR("me.conorthedev.peep.prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
 }

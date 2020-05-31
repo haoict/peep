@@ -17,10 +17,6 @@
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/cbyrne/peep"] options:@{} completionHandler:nil];
 }
 
--(void)donate {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://ko-fi.com/ConorTheDev"] options:@{} completionHandler:nil];
-}
-
 -(void)bug {
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/cbyrne/peep/issues/new"] options:@{} completionHandler:nil];
 }

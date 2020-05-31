@@ -2,5 +2,4 @@
 #import "SkittyPrefs/SPSettingsController.h"
 
 @interface peepRootListController : SPSettingsController
-
 @end
