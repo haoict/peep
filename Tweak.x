@@ -7,6 +7,8 @@
 
 BOOL tweakEnabled;
 BOOL animationsEnabled;
+BOOL saveRespringEnabled;
+BOOL firstLayoutSubviews;
 NSDictionary *prefs;
 
 %hook _UIStatusBar
@@ -23,6 +25,14 @@ NSDictionary *prefs;
   	return self;		
 }
 
+-(void)layoutSubviews {
+	%orig;
+	if(self.foregroundView && saveRespringEnabled && firstLayoutSubviews) {
+		self.foregroundView.hidden = [[NSUserDefaults standardUserDefaults] boolForKey:@"peep_statusbar"];
+		firstLayoutSubviews = NO;
+	}
+}
+
 %new 
 -(void)peep_gestureRecognizerTapped:(id)sender {
 	if(tweakEnabled) {
@@ -33,12 +43,17 @@ NSDictionary *prefs;
 				self.foregroundView.hidden = !self.foregroundView.hidden;
 			}
 			completion:^(BOOL finished){ [self peep_setupGestureRecognizer]; }];
+		
+		if(saveRespringEnabled) {
+			[[NSUserDefaults standardUserDefaults] setBool:self.foregroundView.hidden forKey:@"peep_statusbar"];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+		}
 	}
 }
 
 %new
 -(void)peep_setupGestureRecognizer {
-	self.userInteractionEnabled = TRUE;
+	self.userInteractionEnabled = YES;
 
 	self.peep_tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(peep_gestureRecognizerTapped:)];
 	[self addGestureRecognizer:self.peep_tapRecognizer];
@@ -68,11 +83,14 @@ static void PeepReloadPrefs() {
         prefs = [NSDictionary dictionaryWithContentsOfFile:kSettingsPath];
     }
 
-	tweakEnabled = [prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : TRUE;
-	animationsEnabled = [prefs objectForKey:@"animations"] ? [[prefs valueForKey:@"animations"] boolValue] : TRUE;
+	tweakEnabled = [prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : YES;
+	animationsEnabled = [prefs objectForKey:@"animations"] ? [[prefs valueForKey:@"animations"] boolValue] : YES;
+	saveRespringEnabled = [prefs objectForKey:@"saveRespring"] ? [[prefs valueForKey:@"saveRespring"] boolValue] : NO;
 }
 
 %ctor {
+	firstLayoutSubviews = YES;
+
 	PeepReloadPrefs();
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)PeepReloadPrefs, CFSTR("me.conorthedev.peep.prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
 }
