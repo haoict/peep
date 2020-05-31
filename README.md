@@ -20,5 +20,4 @@ If you have an issue with peep, [open an issue on the Issues Page](https://githu
 - [ConorTheDev](https://twitter.com/ConorTheDev) - Development
 
 ## Support Us
-- [Donate to Conor](https://ko-fi.com/ConorTheDev)
 - [Donate to Mirac](paypal.me/ozdm)
