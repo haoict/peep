@@ -9,15 +9,17 @@
 peep is a tweak that allows you to temporarily hide your status bar by tapping on it. It only works on the homescreen and lockscreen.
 
 ### What versions are supported?
-iOS 13.0+ have been tested, other versions may work but are not officially supported, **use at your own risk!**
+iOS 11 to 13.5 are officially supported, although older versions may work with limited compatibility.
 
 ### I have an issue, how do I report it?
 If you have an issue with peep, [open an issue on the Issues Page](https://github.com/cbyrne/peep/issues)! 
 **Make sure you include screenshots / screen recordings, how to reproduce the issue and information about your device (i.e. Version, Model, etc.)**
 
+## Download
+- Make sure [``repo.conorthedev.me``](https://repo.conorthedev.me) is in your sources
+- Install 'peep' from your Package Manager
+
 ## Credits
 - [Mirac](https://twitter.com/thatmirac) - The idea and help with design
 - [ConorTheDev](https://twitter.com/ConorTheDev) - Development
 
-## Support Us
-- [Donate to Mirac](paypal.me/ozdm)
