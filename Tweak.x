@@ -8,8 +8,10 @@
 BOOL peep_tweakEnabled;
 BOOL peep_animationsEnabled;
 BOOL peep_shouldLayoutSubviews;
+int peep_numberOfTaps;
 NSDictionary *peep_prefs;
 NSUserDefaults *defaults;
+_UIStatusBar *globalStatusBar;
 
 %hook _UIStatusBar
 %property (nonatomic, strong) UITapGestureRecognizer *peep_tapRecognizer;
@@ -19,6 +21,7 @@ NSUserDefaults *defaults;
  	self = %orig;		
 
   	if(self) {		
+		globalStatusBar = self;
  		[self peep_setupGestureRecognizer];		
  	}
 
@@ -64,7 +67,13 @@ NSUserDefaults *defaults;
 -(void)peep_setupGestureRecognizer {
 	self.userInteractionEnabled = YES;
 
+	if(self.peep_tapRecognizer) {
+		[self removeGestureRecognizer:self.peep_tapRecognizer];
+	}
+
 	self.peep_tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(peep_gestureRecognizerTapped:)];
+	self.peep_tapRecognizer.numberOfTapsRequired = peep_numberOfTaps;
+	
 	[self addGestureRecognizer:self.peep_tapRecognizer];
 
 	// Add a fake subview, this allows our gesture recognizer to still be used as the view still has a subview, but it's not visible
@@ -85,7 +94,7 @@ NSUserDefaults *defaults;
 }
 %end
 
-%hook SBCoverSheetPresentationManager
+%hook CoverSheetClass
 -(bool)shouldDisplayFakeStatusBar {
 	if(peep_tweakEnabled) {
 		return ![self isPresented];
@@ -100,6 +109,31 @@ NSUserDefaults *defaults;
 	} else {
 		return %orig;
 	}
+}
+%end
+
+%hook CSCoverSheetViewController
+-(id)fakeStatusBar {
+	if(peep_tweakEnabled) {
+		return NULL;
+	} else {
+		return %orig;
+	}
+}
+
+- (id)_createFakeStatusBar {
+	if(peep_tweakEnabled) {
+		return NULL;
+	} else {
+		return %orig;
+	}
+}
+
+- (void)_setFakeStatusBarEnabled:(_Bool)arg1 {
+	if(peep_tweakEnabled) {
+		arg1 = FALSE;
+	}
+	%orig;
 }
 %end
 
@@ -124,6 +158,9 @@ static void PeepReloadPrefs() {
 
 	peep_tweakEnabled = [peep_prefs objectForKey:@"enabled"] ? [[peep_prefs valueForKey:@"enabled"] boolValue] : YES;
 	peep_animationsEnabled = [peep_prefs objectForKey:@"animations"] ? [[peep_prefs valueForKey:@"animations"] boolValue] : YES;
+	peep_numberOfTaps = [peep_prefs objectForKey:@"taps"] ? [[peep_prefs valueForKey:@"taps"] intValue] : 1;
+
+	[globalStatusBar peep_setupGestureRecognizer];
 }
 
 %ctor {
@@ -132,5 +169,12 @@ static void PeepReloadPrefs() {
                  container:[NSURL URLWithString:@"/var/mobile"]];
 
 	PeepReloadPrefs();
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)PeepReloadPrefs, CFSTR("me.conorthedev.peep.peep_prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)PeepReloadPrefs, CFSTR("me.conorthedev.peep.prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+
+	NSString *coverSheetClass = @"SBDashBoardViewController";
+	if(@available(iOS 13.0, *)) {
+		coverSheetClass = @"SBCoverSheetPresentationManager";
+	}
+
+	%init(CoverSheetClass = NSClassFromString(coverSheetClass));
 }
