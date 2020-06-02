@@ -5,11 +5,11 @@
 */
 #import "peep.h"
 
-BOOL tweakEnabled;
-BOOL animationsEnabled;
-BOOL saveRespringEnabled;
-BOOL firstLayoutSubviews;
-NSDictionary *prefs;
+BOOL peep_tweakEnabled;
+BOOL peep_animationsEnabled;
+BOOL peep_shouldLayoutSubviews;
+NSDictionary *peep_prefs;
+NSUserDefaults *defaults;
 
 %hook _UIStatusBar
 %property (nonatomic, strong) UITapGestureRecognizer *peep_tapRecognizer;
@@ -27,27 +27,36 @@ NSDictionary *prefs;
 
 -(void)layoutSubviews {
 	%orig;
-	if(self.foregroundView && saveRespringEnabled && firstLayoutSubviews) {
-		self.foregroundView.hidden = [[NSUserDefaults standardUserDefaults] boolForKey:@"peep_statusbar"];
-		firstLayoutSubviews = NO;
+	if(self.foregroundView && peep_shouldLayoutSubviews && peep_tweakEnabled) {
+		self.foregroundView.hidden = [defaults boolForKey:[NSString stringWithFormat:@"%@-%@", [self peep_getCurrentApp], @"peep_statusbar"]];
+		peep_shouldLayoutSubviews = NO;
 	}
+}
+
+-(long long)style {
+	if(peep_tweakEnabled) {
+		// When `style` is set or accessed, it seems to modify the `hidden` property of the foregroundView, the way to fix this is to tell peep 
+		// that it is okay to set the hidden property on the next layoutSubviews call
+		peep_shouldLayoutSubviews = YES;
+		[self peep_setupGestureRecognizer];
+	}
+
+	return %orig;
 }
 
 %new 
 -(void)peep_gestureRecognizerTapped:(id)sender {
-	if(tweakEnabled) {
+	if(peep_tweakEnabled) {
 		[UIView transitionWithView:self
-			duration:animationsEnabled ? 0.25 : 0
+			duration:peep_animationsEnabled ? 0.25 : 0
 			options:UIViewAnimationOptionTransitionCrossDissolve
 			animations:^{
 				self.foregroundView.hidden = !self.foregroundView.hidden;
 			}
 			completion:^(BOOL finished){ [self peep_setupGestureRecognizer]; }];
 		
-		if(saveRespringEnabled) {
-			[[NSUserDefaults standardUserDefaults] setBool:self.foregroundView.hidden forKey:@"peep_statusbar"];
-			[[NSUserDefaults standardUserDefaults] synchronize];
-		}
+		[defaults setBool:self.foregroundView.hidden forKey:[NSString stringWithFormat:@"%@-%@", [self peep_getCurrentApp], @"peep_statusbar"]];
+		[defaults synchronize];
 	}
 }
 
@@ -62,6 +71,36 @@ NSDictionary *prefs;
 	self.peep_fakeSubview = [[UIView alloc] initWithFrame:self.bounds];
 	[self addSubview:self.peep_fakeSubview];
 }
+
+%new
+-(NSString *)peep_getCurrentApp {
+	NSString *app = [[%c(SpringBoard) sharedApplication] _accessibilityFrontMostApplication].bundleIdentifier;
+	if([[%c(SBCoverSheetPresentationManager) sharedInstance] isPresented]) {
+		app = @"com.apple.sblockscreen";
+	} else if(app == NULL || [app isEqualToString:@""]) {
+		app = @"com.apple.springboard";
+	}
+	
+	return app;
+}
+%end
+
+%hook SBCoverSheetPresentationManager
+-(bool)shouldDisplayFakeStatusBar {
+	if(peep_tweakEnabled) {
+		return ![self isPresented];
+	} else {
+		return %orig;
+	}
+}
+
+-(bool)needsFakeStatusBarUpdate {
+	if(peep_tweakEnabled) {
+		return ![self isPresented];
+	} else {
+		return %orig;
+	}
+}
 %end
 
 /* Thanks to kritanta for helping me with this */
@@ -72,25 +111,26 @@ static void PeepReloadPrefs() {
         CFArrayRef keyList = CFPreferencesCopyKeyList((CFStringRef)kIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 
         if (keyList) {
-            prefs = (NSDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(keyList, (CFStringRef)kIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+            peep_prefs = (NSDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(keyList, (CFStringRef)kIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
 
-            if (!prefs) {
-                prefs = [NSDictionary new];
+            if (!peep_prefs) {
+                peep_prefs = [NSDictionary new];
             }
             CFRelease(keyList);
         }
     } else {
-        prefs = [NSDictionary dictionaryWithContentsOfFile:kSettingsPath];
+        peep_prefs = [NSDictionary dictionaryWithContentsOfFile:kSettingsPath];
     }
 
-	tweakEnabled = [prefs objectForKey:@"enabled"] ? [[prefs valueForKey:@"enabled"] boolValue] : YES;
-	animationsEnabled = [prefs objectForKey:@"animations"] ? [[prefs valueForKey:@"animations"] boolValue] : YES;
-	saveRespringEnabled = [prefs objectForKey:@"saveRespring"] ? [[prefs valueForKey:@"saveRespring"] boolValue] : NO;
+	peep_tweakEnabled = [peep_prefs objectForKey:@"enabled"] ? [[peep_prefs valueForKey:@"enabled"] boolValue] : YES;
+	peep_animationsEnabled = [peep_prefs objectForKey:@"animations"] ? [[peep_prefs valueForKey:@"animations"] boolValue] : YES;
 }
 
 %ctor {
-	firstLayoutSubviews = YES;
+	defaults = [[NSUserDefaults alloc]
+        _initWithSuiteName:@"me.conorthedev.peep"
+                 container:[NSURL URLWithString:@"/var/mobile"]];
 
 	PeepReloadPrefs();
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)PeepReloadPrefs, CFSTR("me.conorthedev.peep.prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)PeepReloadPrefs, CFSTR("me.conorthedev.peep.peep_prefs/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
 }
